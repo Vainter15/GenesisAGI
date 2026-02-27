@@ -1,0 +1,25 @@
+# Конфиденциальные данные
+.env
+config.py  # Если ты хранишь ключи прямо там, лучше скрыть
+
+# Базы данных и память
+mem0_db/
+knowledge_graph.json
+system_rules.json
+current_plan.json
+
+# Логи и исследования
+research/
+History/
+Sandbox/
+__pycache__/
+
+# Виртуальное окружение
+venv/
+.venv
+
+# Игнорируем тяжелые модели
+models/
+weights/
+*.bin
+*.pth
