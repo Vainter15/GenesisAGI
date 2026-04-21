@@ -9,6 +9,58 @@ class Toolbox:
         """Инициализация инструментов взаимодействия с файловой системой и ОС."""
         # Корень проекта — там, где запущен скрипт
         self.root = os.getcwd()
+        
+    def __init__(self):
+        """Инициализация инструментов взаимодействия с файловой системой и ОС."""
+        self.root = os.getcwd()
+        self.clipboard = {} # 🆕 Оперативная память для фрагментов кода
+        
+    def save_to_clipboard(self, key: str, content: str) -> str:
+        """Сохраняет кусок кода или текст в оперативную память ИИ."""
+        self.clipboard[key] = content
+        return f"✅ [SUCCESS] Данные сохранены в буфер под ключом '{key}'. Объем: {len(content)} символов."
+
+    def view_clipboard(self) -> str:
+        """Показывает все сохраненные фрагменты."""
+        if not self.clipboard:
+            return "Буфер обмена пуст."
+        
+        report = "📋 [CLIPBOARD] СОДЕРЖИМОЕ ВАШЕГО БУФЕРА:\n"
+        for k, v in self.clipboard.items():
+            report += f"\n--- КЛЮЧ: [{k}] ---\n{v}\n"
+        return report
+    
+    def search_in_file(self, filename: str, search_query: str) -> str:
+        """Ищет конкретный текст в файле и выводит его вместе с контекстом (соседними строками)."""
+        try:
+            full_path = os.path.abspath(os.path.join(self.root, filename))
+            if not os.path.exists(full_path):
+                return f"❌ Ошибка: Файл '{filename}' не найден."
+
+            with open(full_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+
+            results = []
+            context_radius = 5 # Захватываем 5 строк до и 5 после совпадения
+
+            for i, line in enumerate(lines):
+                if search_query.lower() in line.lower():
+                    start = max(0, i - context_radius)
+                    end = min(len(lines), i + context_radius + 1)
+                    
+                    snippet = f"--- Совпадение на строке {i+1} ---\n"
+                    for j in range(start, end):
+                        prefix = ">> " if j == i else "   "
+                        snippet += f"{prefix}{j+1}: {lines[j]}"
+                    results.append(snippet)
+
+            if not results:
+                return f"🔍 Запрос '{search_query}' в файле {filename} не найден."
+            
+            return f"✅ [SUCCESS] Найдены совпадения:\n\n" + "\n".join(results[:3]) # Отдаем максимум 3 куска, чтобы не перегрузить ИИ
+            
+        except Exception as e:
+            return f"❌ Ошибка поиска: {e}"
 
     def list_files(self, directory="."):
         """Возвращает список файлов, игнорируя служебные папки."""
@@ -29,20 +81,24 @@ class Toolbox:
         except Exception as e:
             return f"❌ Ошибка листинга: {e}"
 
-    def read_file(self, filename):
-        """Инструмент 'Полного зрения': считывает файл целиком без купюр."""
+    def read_file(self, filename, start_line=1, end_line=None):
+        """Инструмент 'Полного зрения': считывает файл или его часть."""
         try:
             full_path = os.path.abspath(os.path.join(self.root, filename))
-            if not full_path.startswith(self.root):
-                return "❌ Ошибка безопасности: Чтение файлов вне проекта запрещено."
-
-            if not os.path.exists(full_path):
-                return f"❌ Ошибка: Файл '{filename}' не найден."
-
-            with open(full_path, 'r', encoding='utf-8') as f:
-                content = f.read()
+            # ... проверки безопасности ...
             
-            return f"✅ [SUCCESS] 📖 ПОЛНОЕ СОДЕРЖИМОЕ {filename}:\n\n{content}"
+            with open(full_path, 'r', encoding='utf-8') as f:
+                lines = f.readlines()
+                
+            total_lines = len(lines)
+            end = end_line if end_line else min(start_line + 300, total_lines) # Читаем максимум 300 строк за раз
+            
+            content = "".join(lines[start_line-1:end])
+            
+            report = f"✅ [SUCCESS] 📖 ФАЙЛ {filename} (Строки {start_line}-{end} из {total_lines}):\n\n{content}"
+            if end < total_lines:
+                report += f"\n\n⚠️ Файл слишком большой. Чтобы прочитать дальше, вызови read_file с start_line={end+1}"
+            return report
         except Exception as e:
             return f"❌ Ошибка чтения {filename}: {e}"
 

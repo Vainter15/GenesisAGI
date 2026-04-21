@@ -13,13 +13,8 @@ research/
 History/
 Sandbox/
 __pycache__/
-
+Models/
 # Виртуальное окружение
 venv/
 .venv
 
-# Игнорируем тяжелые модели
-models/
-weights/
-*.bin
-*.pth

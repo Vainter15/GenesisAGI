@@ -27,14 +27,13 @@ VPS_IP = "91.211.15.93"
 
 # --- 🧠 МОЗГОВОЙ ЦЕНТР (АРХИТЕКТУРА) ---
 # Основная модель для принятия решений (должна быть в списке FREE)
-MODEL_ARCHITECT = "stepfun/step-3.5-flash:free"
+MODEL_ARCHITECT = "nvidia/nemotron-3-super-120b-a12b:free"
 MODEL_MONITOR = "liquid/lfm-2.5-1.2b-thinking:free"
 
 # --- 🛡️ ГАРАНТИРОВАННО БЕСПЛАТНЫЙ ПУЛ (MODELS_FREE) ---
 # Я удалил подозрительные модели, чтобы исключить списания
 MODELS_FREE = [
     # Самые стабильные и быстрые
-    "stepfun/step-3.5-flash:free", 
     "arcee-ai/trinity-large-preview:free",
     
     
@@ -57,7 +56,15 @@ MODELS_FREE = [
     "nvidia/nemotron-nano-9b-v2:free",
     "google/gemma-3-12b-it:free",
     "google/gemma-3-27b-it:free"
+    "google/gemma-4-26b-a4b-it:free",
+    "google/gemma-4-31b-it:free",
+    "nvidia/nemotron-3-super-120b-a12b:free"
+
+
+
+
 ]
+
 
 # --- ⚠️ ВНИМАНИЕ ---
 # Все модели выше проверяются в genesis_core.py через 'money_drainers'.
